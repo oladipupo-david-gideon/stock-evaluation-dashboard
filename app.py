@@ -9,14 +9,10 @@ st.title("Stock Valuation Dashboard")
 # --- 1. Load the Master Ticker List ---
 @st.cache_data
 def get_ticker_list():
-    """
-    Downloads the official list of all stocks traded on US exchanges 
-    (NYSE, NASDAQ, AMEX) directly from the Nasdaq FTP server.
-    """
     try:
-        # Official source for all US-traded securities
-        url = "http://ftp.nasdaqtrader.com/dynamic/SymDir/nasdaqtraded.txt"
-        df = pd.read_csv(url, sep='|')
+        # READ LOCAL FILE instead of URL
+        # 'tickers.txt' must be in the same folder as your python file
+        df = pd.read_csv('tickers.txt', sep='|')
         
         # Filter out test data and clean up
         df = df[df['Test Issue'] == 'N']
@@ -26,13 +22,11 @@ def get_ticker_list():
         df['Search_Label'] = df['Symbol'] + " - " + df['Security Name']
         
         return df[['Symbol', 'Search_Label']].sort_values('Symbol')
+        
     except Exception as e:
-        # Fallback list if the FTP server is down
-        st.warning("Could not download full ticker list. Using fallback list.")
-        return pd.DataFrame({
-            'Symbol': ['SPY', 'AAPL', 'NVDA', 'MSFT', 'TSLA', 'AMZN', 'GOOGL'], 
-            'Search_Label': ['SPY - SPDR S&P 500', 'AAPL - Apple Inc', 'NVDA - NVIDIA', 'MSFT - Microsoft', 'TSLA - Tesla', 'AMZN - Amazon', 'GOOGL - Alphabet']
-        })
+        # Fallback if the file is missing
+        st.error("Error: 'tickers.txt' not found. Please upload it to GitHub.")
+        return pd.DataFrame()
 
 # Load tickers once
 ticker_df = get_ticker_list()
@@ -112,3 +106,4 @@ with col2:
         st.success("Trend: Bullish")
     else:
         st.error("Trend: Bearish")
+
