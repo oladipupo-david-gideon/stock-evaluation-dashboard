@@ -1,23 +1,40 @@
-# 📈 S&P 500 Valuation Dashboard
+# 📈 Universal Stock Valuation Dashboard
 
-A live financial dashboard that visualizes the S&P 500 (SPY) price history, calculates technical indicators, and screens for trading signals. Built with Python and Streamlit.
+A professional-grade financial dashboard that allows users to analyze **any** public stock, cryptocurrency, or index. It visualizes price history, calculates technical indicators, and screens for trading signals using real-time data.
 
 **[👉 Click here to view the Live App]([INSERT YOUR STREAMLIT APP LINK HERE])**
 
-## 🚀 Features
-* **Real-Time Data:** Fetches the last 5 years of market data using the Yahoo Finance API (`yfinance`).
+## 🚀 New Features (v2.0)
+
+### 1. 🔍 Universal Search with Smart Autocomplete
+* **Database of 8,000+ Stocks:** The app now queries a local database of every stock traded on NASDAQ, NYSE, and AMEX.
+* **Search by Name:** Users can find companies by typing their name (e.g., "Apple") without needing to memorize the ticker symbol (`AAPL`).
+
+### 2. 🛠️ Manual Entry Mode (Fault Tolerance)
+* **Beyond the Stock Market:** Added a "Manual Entry" toggle that bypasses the standard list.
+* **Supports All Assets:** This mode allows users to analyze assets not found in standard exchange lists, including:
+    * **Cryptocurrencies** (e.g., `BTC-USD`, `ETH-USD`)
+    * **Market Indices** (e.g., `^GSPC` for S&P 500, `^DJI`)
+    * **Foreign Stocks** (e.g., `7203.T` for Toyota)
+
+### 3. ⚡ Performance Optimization
+* **Zero-Latency Loading:** Replaced slow external network requests with a cached local dataset (`tickers.txt`). The app now loads instantly and is immune to external server timeouts.
+
+---
+
+## 📊 Core Capabilities
+* **Real-Time Data:** Fetches the last 5 years of daily market data using the `yfinance` API.
 * **Interactive Charts:** Zoomable "Candlestick" charts powered by **Plotly**.
-* **Technical Analysis:**
-    * **50-Day SMA** (Simple Moving Average) - Orange Line
-    * **200-Day SMA** (Simple Moving Average) - Blue Line
-* **Automated Signals:** Automatically detects "Golden Cross" (Bullish) or "Death Cross" (Bearish) trends based on moving averages.
-* **Key Metrics:** Displays current price, daily return, and 52-week highs.
+* **Technical Indicators:**
+    * **50-Day SMA** (Orange Line)
+    * **200-Day SMA** (Blue Line)
+* **Trend Analysis:** Automatically interprets data to flag "Bullish" or "Bearish" trends based on the Golden Cross/Death Cross logic.
 
 ## 🛠️ Tech Stack
 * **Python 3.9+**
 * **Streamlit** (Frontend/Dashboarding)
 * **Plotly Graph Objects** (Financial Visualization)
-* **Pandas** (Data Manipulation & Rolling Statistics)
+* **Pandas** (Data Manipulation & File I/O)
 * **YFinance** (Market Data API)
 
 ## 💻 How to Run Locally
@@ -39,6 +56,7 @@ If you want to run this dashboard on your own machine:
     ```bash
     streamlit run app.py
     ```
+    *Note: Ensure the `tickers.txt` file is present in the root directory for the search feature to work.*
 
 ## ⚠️ Disclaimer
 This dashboard is for educational purposes only. It is not financial advice. Always do your own research before trading.
