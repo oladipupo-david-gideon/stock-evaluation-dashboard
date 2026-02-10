@@ -2,7 +2,7 @@
 
 A professional-grade financial dashboard that allows users to analyze **any** public stock, cryptocurrency, or index. It visualizes price history, calculates technical indicators, and screens for trading signals using real-time data.
 
-**[👉 Click here to view the Live App](https://oladipupo-david-stock-dashboard.streamlit.app/)**
+**[👉 Click here to view the Live App](https://oladipupo-david-finance-dashboard.streamlit.app/)**
 
 ## 🚀 New Features (v2.0)
 
