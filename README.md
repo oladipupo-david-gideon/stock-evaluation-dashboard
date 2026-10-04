@@ -1,62 +1,71 @@
-# 📈 Universal Stock Valuation Dashboard
+# 📈 Stock Valuation Dashboard
 
-A professional-grade financial dashboard that allows users to analyze **any** public stock, cryptocurrency, or index. It visualizes price history, calculates technical indicators, and screens for trading signals using real-time data.
+A Streamlit dashboard for exploring stock price trends. Search about 5,300 Nasdaq-listed securities by ticker or company name, or enter any Yahoo Finance ticker manually (crypto, indices, foreign stocks). It plots price history with 50-day and 200-day moving averages and shows a simple trend signal.
 
-**[👉 Click here to view the Live App](https://oladipupo-david-finance-dashboard.streamlit.app/)**
+**[👉 View the live app](https://oladipupo-david-finance-dashboard.streamlit.app/)** (it may take a few seconds to wake up if it has been idle)
 
-## 🚀 New Features (v2.0)
+> Built with AI assistance. I led the design and feature decisions, then reviewed and tested the code.
 
-### 1. 🔍 Universal Search with Smart Autocomplete
-* **Database of 8,000+ Stocks:** The app now queries a local database of every stock traded on NASDAQ, NYSE, and AMEX.
-* **Search by Name:** Users can find companies by typing their name (e.g., "Apple") without needing to memorize the ticker symbol (`AAPL`).
+## Features
 
-### 2. 🛠️ Manual Entry Mode (Fault Tolerance)
-* **Beyond the Stock Market:** Added a "Manual Entry" toggle that bypasses the standard list.
-* **Supports All Assets:** This mode allows users to analyze assets not found in standard exchange lists, including:
-    * **Cryptocurrencies** (e.g., `BTC-USD`, `ETH-USD`)
-    * **Market Indices** (e.g., `^GSPC` for S&P 500, `^DJI`)
-    * **Foreign Stocks** (e.g., `7203.T` for Toyota)
+### Search
+* Searchable dropdown of 5,296 securities loaded from a local file (`tickers.txt`, Nasdaq-listed format): 4,168 non-ETF securities (stocks, warrants, rights, units) and 1,128 ETFs.
+* Find companies by name (e.g., "Apple") without knowing the ticker symbol (`AAPL`).
+* **Manual Entry mode** for tickers outside the list, such as:
+    * Cryptocurrencies (`BTC-USD`, `ETH-USD`)
+    * Market indices (`^GSPC`, `^DJI`)
+    * Foreign stocks (`7203.T`)
 
-### 3. ⚡ Performance Optimization
-* **Zero-Latency Loading:** Replaced slow external network requests with a cached local dataset (`tickers.txt`). The app now loads instantly and is immune to external server timeouts.
+### Charts and analysis
+* Five years of daily price history from Yahoo Finance (`yfinance`), fetched on demand.
+* Interactive candlestick chart (Plotly) with a 50-day SMA (orange) and 200-day SMA (blue).
+* Current price and moving-average metrics.
+* Trend signal: **Bullish** when the 50-day SMA is above the 200-day SMA, otherwise **Bearish**. This is the idea behind golden cross / death cross signals. If a ticker doesn't have enough history (about 200 trading days), the app shows a message instead of a signal.
 
----
+### Caching and error handling
+* The ticker list loads from a local file and is cached with `st.cache_data`, so the app doesn't fetch a remote list on every run.
+* Price data is cached for one hour (`ttl=3600`) to limit repeat requests to Yahoo Finance.
+* The app shows an error message if a ticker can't be loaded (delisted or invalid).
 
-## 📊 Core Capabilities
-* **Real-Time Data:** Fetches the last 5 years of daily market data using the `yfinance` API.
-* **Interactive Charts:** Zoomable "Candlestick" charts powered by **Plotly**.
-* **Technical Indicators:**
-    * **50-Day SMA** (Orange Line)
-    * **200-Day SMA** (Blue Line)
-* **Trend Analysis:** Automatically interprets data to flag "Bullish" or "Bearish" trends based on the Golden Cross/Death Cross logic.
+## Limitations
+* The search list covers Nasdaq-listed securities only. NYSE and AMEX tickers (e.g., `SPY`) need Manual Entry.
+* The analysis is technical only (moving averages). Despite the name, it doesn't calculate valuation metrics such as P/E or DCF.
+* Data comes from Yahoo Finance through `yfinance`, an unofficial library. It can be delayed, rate-limited, or occasionally unavailable.
+* The Bullish/Bearish signal is a simple indicator, not a trading strategy.
 
-## 🛠️ Tech Stack
-* **Python 3.9+**
-* **Streamlit** (Frontend/Dashboarding)
-* **Plotly Graph Objects** (Financial Visualization)
-* **Pandas** (Data Manipulation & File I/O)
-* **YFinance** (Market Data API)
+## Tech Stack
+* Python 3 (tested on 3.14)
+* Streamlit
+* Plotly
+* pandas
+* yfinance
 
-## 💻 How to Run Locally
+## Run Locally
 
-If you want to run this dashboard on your own machine:
+```bash
+git clone https://github.com/oladipupo-david-gideon/stock-evaluation-dashboard.git
+cd stock-evaluation-dashboard
+python -m venv venv
+```
 
-1.  **Clone the repository**
-    ```bash
-    git clone [https://github.com/YOUR_USERNAME/sp500-dashboard.git](https://github.com/YOUR_USERNAME/sp500-dashboard.git)
-    cd sp500-dashboard
-    ```
+**Windows (PowerShell):**
+```powershell
+.\venv\Scripts\python -m pip install -r requirements.txt
+.\venv\Scripts\python -m streamlit run app.py
+```
 
-2.  **Install dependencies**
-    ```bash
-    pip install -r requirements.txt
-    ```
+**macOS / Linux:**
+```bash
+source venv/bin/activate
+pip install -r requirements.txt
+streamlit run app.py
+```
 
-3.  **Run the app**
-    ```bash
-    streamlit run app.py
-    ```
-    *Note: Ensure the `tickers.txt` file is present in the root directory for the search feature to work.*
+Keep `tickers.txt` in the same folder as `app.py`, since the search feature reads it.
+
+## Recent Fixes
+* The default selection is now AAPL. Before, it fell back to the first ticker alphabetically (a newly listed company with almost no history).
+* Tickers without enough history now show "N/A" and an info message instead of a false "Bearish" signal.
 
 ## ⚠️ Disclaimer
 This dashboard is for educational purposes only. It is not financial advice. Always do your own research before trading.
