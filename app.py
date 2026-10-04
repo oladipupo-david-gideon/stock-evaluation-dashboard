@@ -21,7 +21,7 @@ def get_ticker_list():
         # Create a search label: "AAPL - Apple Inc."
         df['Search_Label'] = df['Symbol'] + " - " + df['Security Name']
         
-        return df[['Symbol', 'Search_Label']].sort_values('Symbol')
+        return df[['Symbol', 'Search_Label']].sort_values('Symbol').reset_index(drop=True)
         
     except Exception as e:
         # Fallback if the file is missing
@@ -39,12 +39,17 @@ with col_mode:
     input_mode = st.radio("Input Mode:", ["Search US Stocks", "Manual Entry"], horizontal=True)
 
 if input_mode == "Search US Stocks":
-    # Dropdown with 8,000+ options. 
+    # Dropdown with 5,000+ options. 
     # typing 'App' will show 'AAPL - Apple Inc', 'APPL - Appell...', etc.
+    
+    default_idx = 0
+    if 'AAPL' in ticker_df['Symbol'].values:
+        default_idx = int(ticker_df.index[ticker_df['Symbol'] == 'AAPL'][0])
+    
     selected_item = st.selectbox(
         "Search for a stock:", 
         options=ticker_df['Search_Label'],
-        index=ticker_df[ticker_df['Symbol'] == 'SPY'].index[0] if 'SPY' in ticker_df['Symbol'].values else 0
+        index=default_idx
     )
     # Extract the symbol from the selection string (everything before " - ")
     selected_ticker = selected_item.split(" - ")[0]
@@ -98,11 +103,16 @@ with col2:
     sma_50 = df['SMA_50'].iloc[-1]
     sma_200 = df['SMA_200'].iloc[-1]
     
-    st.metric("Current Price", f"${current_price:.2f}")
-    st.metric("50-Day SMA", f"${sma_50:.2f}")
-    st.metric("200-Day SMA", f"${sma_200:.2f}")
+    def fmt(x):
+        return "N/A" if pd.isna(x) else f"${x:.2f}"
     
-    if sma_50 > sma_200:
+    st.metric("Current Price", fmt(current_price))
+    st.metric("50-Day SMA", fmt(sma_50))
+    st.metric("200-Day SMA", fmt(sma_200))
+    
+    if pd.isna(sma_50) or pd.isna(sma_200):
+        st.info("Not enough price history to calculate the trend.")
+    elif sma_50 > sma_200:
         st.success("Trend: Bullish")
     else:
         st.error("Trend: Bearish")
